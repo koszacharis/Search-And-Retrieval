@@ -35,7 +35,7 @@ public class Indexer {
 		doc.add(new StringField("item_name", item_name, Field.Store.YES));
 		doc.add(new TextField("item_category", item_category, Field.Store.NO));
 		doc.add(new TextField("item_desc", item_desc, Field.Store.NO));
-		doc.add(new TextField("item_curr_price", item_curr_price, Field.Store.NO));
+		doc.add(new TextField("item_curr_price", item_curr_price, Field.Store.YES));
 		String fullSearchableText = String.valueOf(item_id) + " " + item_name + " " + item_category + " " + item_desc
 				+ " " + item_curr_price;
 		doc.add(new TextField("content", fullSearchableText, Field.Store.NO));
@@ -64,8 +64,8 @@ public class Indexer {
 			// StandardAnalyzer());
 			// IndexWriterConfig config = new IndexWriterConfig(new
 			// EnglishAnalyzer());
-			IndexWriter i = new IndexWriter(directory, config);
-			i.deleteAll();
+			IndexWriter indexWriter = new IndexWriter(directory, config);
+			indexWriter.deleteAll();
 			Statement stmt = conn.createStatement();
 
 			/*
@@ -79,7 +79,7 @@ public class Indexer {
 
 			// Add an index on each item
 			while (items.next()) {
-				insertDoc(i, items.getString("item_id"), items.getString("item_name"), items.getString("Categories"),
+				insertDoc(indexWriter, items.getString("item_id"), items.getString("item_name"), items.getString("Categories"),
 						items.getString("description"), items.getString("current_price"));
 			}
 
@@ -91,7 +91,7 @@ public class Indexer {
 				System.out.println(ex);
 			}
 
-			i.close();
+			indexWriter.close();
 			directory.close();
 		} catch (Exception e) {
 			e.printStackTrace();
