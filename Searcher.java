@@ -254,7 +254,7 @@ public class Searcher {
 					if (o1.getDistance() == o2.getDistance())
 						return o1.getPrice().compareTo(o2.getPrice());
 					else
-						return Double.compare(o2.getDistance(), o1.getDistance());
+						return Double.compare(o1.getDistance(), o2.getDistance());
 				} else if (o1.score < o2.score)
 					return 1;
 				else
