@@ -1,3 +1,4 @@
+USE ad;
 CREATE TABLE IF NOT EXISTS ItemLocation (ItemID varchar(50) NOT NULL,
 						   Location POINT NOT NULL,
 						   SPATIAL INDEX(Location),
