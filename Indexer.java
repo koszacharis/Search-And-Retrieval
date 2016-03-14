@@ -77,7 +77,7 @@ public class Indexer {
 
 			// Fetch all the items
 			ResultSet items = stmt.executeQuery(sql);
-
+			System.out.println("Building Lucene index ...");
 			// Add an index on each item
 			while (items.next()) {
 				progBar++;
@@ -85,6 +85,10 @@ public class Indexer {
 					printProgBar(progBar/195);
 				insertDoc(indexWriter, items.getString("item_id"), items.getString("item_name"), items.getString("Categories"),
 						items.getString("description"), items.getString("current_price"));
+				if (progBar==19532){
+					System.out.println("\n");
+					System.out.println("Done.");
+				}
 			}
 
 			stmt.close();
