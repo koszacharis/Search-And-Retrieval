@@ -87,7 +87,7 @@ public class Indexer {
 						items.getString("description"), items.getString("current_price"));
 				if (progBar==19532){
 					System.out.println("\n");
-					System.out.println("Done.");
+					System.out.println("Done.\n");
 				}
 			}
 
