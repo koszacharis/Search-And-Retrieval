@@ -82,43 +82,57 @@ public class Searcher {
 		for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
 			Document document = indexSearcher.doc(scoreDoc.doc);
 			IndexDoc doc = new IndexDoc();
-
+			//System.out.println(document.get("item_id")+" "+document.get("item_name")+" "+document.get("item_curr_price")+" "+scoreDoc.score);
 			doc.setId(document.get("item_id"));
 			doc.setName(document.get("item_name"));
 			doc.setPrice(document.get("item_curr_price"));
 			doc.setScore(scoreDoc.score);
 			indexDocs.add(doc); // add to List
+			
 			doc = null; // reset object
 		}
 
-		/* sort by Price ascending */
+//		 /* sort by Price ascending */
+//		 Collections.sort(indexDocs, new Comparator<IndexDoc>() {
+//		
+//		 @Override
+//		 public int compare(IndexDoc o1, IndexDoc o2) {
+//		
+//		 return o2.getPrice().compareTo(o1.getPrice());
+//		 }
+//		
+//		 });
+//		
+//		 /* sort by Score ascending */
+//		
+//		 Collections.sort(indexDocs, new Comparator<IndexDoc>() {
+//		
+//		 @Override
+//		 public int compare(IndexDoc o1, IndexDoc o2) {
+//		
+//		 return Float.compare(o2.getScore(), o1.getScore());
+//		 }
+//		
+//		 });
+
 		Collections.sort(indexDocs, new Comparator<IndexDoc>() {
 
 			@Override
 			public int compare(IndexDoc o1, IndexDoc o2) {
-
-				return o2.getPrice().compareTo(o1.getPrice());
+				if (o1.getScore() == o2.getScore()) {
+					return o1.getPrice().compareTo(o2.getPrice());
+				} else if (o1.getScore() > o2.getScore())
+					return 1;
+				else
+					return -1;
 			}
 
 		});
 
-		/* sort by Score ascending */
-
-		Collections.sort(indexDocs, new Comparator<IndexDoc>() {
-
-			@Override
-			public int compare(IndexDoc o1, IndexDoc o2) {
-
-				return Float.compare(o2.getScore(), o1.getScore());
-			}
-
-		});
 		// print the sorted List
 		for (IndexDoc element : indexDocs) {
-			System.out.println(element.getId() + ", " + element.getName() + ", score:" + element.getScore());
+			System.out.println(element.getId() + ", " + element.getName() + ", score:" + element.getScore()+" "+ element.getPrice());
 		}
-
-		// return indexDocs;
 	}
 
 	/**
@@ -145,6 +159,7 @@ public class Searcher {
 
 		Connection conn = null;
 		double dist;
+		int counter = 0;
 
 		try {
 			conn = DbManager.getConnection(true);
@@ -170,6 +185,8 @@ public class Searcher {
 		String botRight = latitudeMax + " " + longitudeMin;
 		String botLeft = latitudeMin + " " + longitudeMin;
 
+//		System.out.println(topRight + " " + topLeft + " " + botRight + " " + botLeft);
+
 		Path path = Paths.get("indexes");
 		Directory directory = FSDirectory.open(path);
 		IndexReader indexReader = DirectoryReader.open(directory);
@@ -177,7 +194,7 @@ public class Searcher {
 		QueryParser queryParser = new QueryParser(q, new SimpleAnalyzer());
 		Query query = queryParser.parse(searchText);
 		TopDocs topDocs = indexSearcher.search(query, 19532);
-
+		
 		System.out.println("Number of Hits: " + topDocs.totalHits);
 		for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
 			Document document = indexSearcher.doc(scoreDoc.doc);
@@ -212,12 +229,13 @@ public class Searcher {
 						doc.setDistance(dist);
 						// add to List
 						indexDocs.add(doc);
-
+						counter++;
 						doc = null; // reset object
 					}
 				}
 			}
 		}
+		System.out.println("Number of Hits inside Bounding Box: " + counter);
 
 		/**
 		 * ordered by decreasing Lucene-score for items with equal Lucene score,
@@ -236,10 +254,10 @@ public class Searcher {
 						return o2.getPrice().compareTo(o1.getPrice());
 					else
 						return Double.compare(o2.getDistance(), o1.getDistance());
-				} else if (o1.score > o2.score)
+				} else if (o1.score < o2.score)
 					return 1;
 				else
-					return 0;
+					return -1;
 			}
 		});
 
@@ -285,12 +303,13 @@ public class Searcher {
 		public IndexDoc() {
 		};
 
-		public IndexDoc(String id, String name, float score, String price) {
+		public IndexDoc(String id, String name, float score, String price, double distance) {
 			super();
 			this.id = id;
 			this.name = name;
 			this.score = score;
 			this.price = price;
+			this.distance = distance;
 		}
 
 		public String getId() {
