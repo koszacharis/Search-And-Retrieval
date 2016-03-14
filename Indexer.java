@@ -11,7 +11,7 @@ import java.nio.file.Paths;
 public class Indexer {
 	public Indexer() {
 	}
-
+	
 	public static IndexWriter indexWriter;
 
 	public static void main(String args[]) {
@@ -48,6 +48,7 @@ public class Indexer {
 
 	public static void rebuildIndexes(String indexPath) {
 		Connection conn = null;
+		int progBar=0;
 		try {
 
 			// create a connection to the database to retrieve Items from MySQL
@@ -79,6 +80,9 @@ public class Indexer {
 
 			// Add an index on each item
 			while (items.next()) {
+				progBar++;
+				if (progBar%195 == 0)
+					printProgBar(progBar/195);
 				insertDoc(indexWriter, items.getString("item_id"), items.getString("item_name"), items.getString("Categories"),
 						items.getString("description"), items.getString("current_price"));
 			}
@@ -96,5 +100,22 @@ public class Indexer {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static void printProgBar(int percent){
+	    StringBuilder bar = new StringBuilder("[");
+
+	    for(int i = 0; i < 50; i++){
+	        if( i < (percent/2)){
+	            bar.append("=");
+	        }else if( i == (percent/2)){
+	            bar.append(">");
+	        }else{
+	            bar.append(" ");
+	        }
+	    }
+
+	    bar.append("]   " + percent + "%     ");
+	    System.out.print("\r" + bar.toString());
 	}
 }
