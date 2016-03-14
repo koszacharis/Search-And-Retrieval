@@ -83,7 +83,6 @@ public class Searcher {
 		for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
 			Document document = indexSearcher.doc(scoreDoc.doc);
 			IndexDoc doc = new IndexDoc();
-			//System.out.println(document.get("item_id")+" "+document.get("item_name")+" "+document.get("item_curr_price")+" "+scoreDoc.score);
 			doc.setId(document.get("item_id"));
 			doc.setName(document.get("item_name"));
 			doc.setPrice(document.get("item_curr_price"));
@@ -132,8 +131,9 @@ public class Searcher {
 
 		// print the sorted List
 		for (IndexDoc element : indexDocs) {
-			System.out.println(element.getId() + ", " + element.getName() + ", score:" + element.getScore()+" "+ element.getPrice());
+			System.out.println(element.getId() + ", " + element.getName() + ", score:" + element.getScore());
 		}
+		indexDocs.clear();
 	}
 
 	/**
@@ -267,6 +267,8 @@ public class Searcher {
 			System.out.println(element.getId() + ", " + element.getName() + ", score:" + element.getScore() + ", "
 					+ element.getDistance());// + ", " + element.getPrice());
 		}
+		
+		indexDocs.clear();
 	}
 
 	/*
