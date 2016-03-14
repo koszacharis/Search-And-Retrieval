@@ -16,7 +16,6 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
-
 import org.apache.lucene.analysis.core.SimpleAnalyzer;
 import org.apache.lucene.document.*;
 import java.io.IOException;
@@ -37,16 +36,18 @@ public class Searcher {
 		// String usage = "java Searcher";
 
 		if (args.length == 1) {
-			System.out.println("Coordinates and width were not specified");
+			System.out.println("Coordinates and width were not specified.");
 			basicSearch(args[0], "content");
 		} else if (args.length == 7) {
+			System.out.println("Coordinates and width were specified.");
 			longitude = Double.parseDouble(args[2]);
 			latitude = Double.parseDouble(args[4]);
 			width = Double.parseDouble(args[6]);
 			spatialSearch(args[0], "content", longitude, latitude, width);
 		} else {
-			System.out.println("Not enough arguments passed");
-			System.out.println();
+			System.out.println("Error in Searcher arguments");
+			System.out.println("For basic search use   ./runLoad.sh " +'"'+"SearchText"+'"');
+			System.out.println("For spatial search use ./runLoad.sh " +'"'+"SearchText"+'"'+" -x longititude -y latitude -w width");
 		}
 
 	}
