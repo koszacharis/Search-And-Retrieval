@@ -252,7 +252,7 @@ public class Searcher {
 
 				if (o1.score == o2.score) {
 					if (o1.getDistance() == o2.getDistance())
-						return o2.getPrice().compareTo(o1.getPrice());
+						return o1.getPrice().compareTo(o2.getPrice());
 					else
 						return Double.compare(o2.getDistance(), o1.getDistance());
 				} else if (o1.score < o2.score)
@@ -265,7 +265,7 @@ public class Searcher {
 		/* print the sorted ArrayList */
 		for (IndexDoc element : indexDocs) {
 			System.out.println(element.getId() + ", " + element.getName() + ", score:" + element.getScore() + ", "
-					+ element.getDistance());// + ", " + element.getPrice());
+					+ element.getDistance() + ", " + element.getPrice());
 		}
 		
 		indexDocs.clear();
